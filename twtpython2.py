@@ -16,33 +16,56 @@ client = MongoClient(connection_string)
 dbs = client.list_database_names()
 #print(dbs)
 
-#here we are connecting to my Books DB using the client object created previously then method to list collections name and print
+#here we are connecting to my Books database using the client object created previously then method to list collections name and print
 book_db = client.Books
-collections = book_db.list_collection_names()
+#collections = book_db.list_collection_names()
 #print(collections)
+book_collection = book_db.Books_Read   #to be used below in find_all_books()
 
+#insert an item in a collection
+#Books_Read collection is like a table in my Books DB
 def insert_doc():
     collection = book_db.Books_Read
     test_document = {
-        "First_Name": "Robert", 
-        "Last_Name": "Jordan", 
-        "Book_Title": "Lord of Chaos", 
-        "Book_Series": "The Wheel of Time", 
+        "First_Name": "Brandon", 
+        "Last_Name": "Sanderson", 
+        "Book_Title": "The Final Empire", 
+        "Book_Series": "Mistborn", 
         "Subject": "Fantasy", 
         "Type": "Audio", 
-        "End_Date": datetime.fromisoformat('2022-07-03'), 
-        "Summary": "Book6, Rand controls Andor and start up training of me saidin army with maizim tain; matrim distract with his red palm army; Perrin and lady falcon ruling in that part and meet up with Rand while Mat leads Elaine and Nynaeve to a city with a magical bowl.  Egwene becomes Amrylin Seat for the Rebels" 
+        "End_Date": datetime.fromisoformat('2022-07-15'), 
+        "Summary": "Book1, A world full of mist and ash ruled by the Hero of Ages, Lord Ruler who defeated an unknowned enemy 1000 years ago but now surpresses the SKAA lower caste people while certain higher caste folks are living well.  There are folks that hold power called allomancers who can burn metals internally to exhibit superpowers (this is heriditary).  Two of the high powered mistborns that are halfskaa plot to overthrow the Lord Ruler but aren't completely successful.  The army they put together and Eden (leader) conducts a premature attack which brings down most of their army." 
     }
     inserted_id = collection.insert_one(test_document).inserted_id
     print(inserted_id)
 
-#creating a query function
-#def find_all_books():
+#pprinter declaration
+printer = pprint.PrettyPrinter()
+
+#creating a query find all books function
+def find_all_books():
+    all_books = book_collection.find()  #I originally tried to use find on a DB but it only works on a collection
+
+    for book in all_books:
+        printer.pprint(book)
+
+#query function to find an author first instance using find_one() but find() will return all but error?
+def find_author():
+    author = book_collection.find({"First_Name": "Brandon"})
+    
+    for name in author:
+        printer.pprint(name)
 
 def main():
-
     #uncomment when we want to insert an item
-    insert_doc()
+    #insert_doc()
+
+    #uncomment when we want to find all books
+    #find_all_books()
+
+    #uncomment when we want to find an author
+    find_author()
+
 
 if __name__ == '__main__':
     main()
